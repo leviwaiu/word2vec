@@ -36,6 +36,7 @@ int main(int argc, char **argv)
     printf("Usage: ./compute-accuracy <FILE> <threshold>\nwhere FILE contains word projections, and threshold is used to reduce vocabulary of the model for fast approximate evaluation (0 = off, otherwise typical value is 30000)\n");
     return 0;
   }
+  //Getting the name of the file
   strcpy(file_name, argv[1]);
   if (argc > 2) threshold = atoi(argv[2]);
   f = fopen(file_name, "rb");
@@ -43,15 +44,20 @@ int main(int argc, char **argv)
     printf("Input file not found\n");
     return -1;
   }
+  
+  //Read the amount of words
   fscanf(f, "%lld", &words);
   if (threshold) if (words > threshold) words = threshold;
+  //Read the size of the vectors
   fscanf(f, "%lld", &size);
+  //Allocation of memory
   vocab = (char *)malloc(words * max_w * sizeof(char));
   M = (float *)malloc(words * size * sizeof(float));
   if (M == NULL) {
     printf("Cannot allocate memory: %lld MB\n", words * size * sizeof(float) / 1048576);
     return -1;
   }
+  //Loop for each word
   for (b = 0; b < words; b++) {
     a = 0;
     while (1) {
